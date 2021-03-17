@@ -1,2 +1,5 @@
 venv/ 
 secret.py
+__pycache__ 
+.vscode/
+node_modules
