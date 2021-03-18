@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/karapalumbo/petfinder-capstone/issues"
   },
-  "homepage": "https://github.com/karapalumbo/petfinder-capstone#readme"
+  "homepage": "https://github.com/karapalumbo/petfinder-capstone#readme",
+  "dependencies": {
+    "@petfinder/petfinder-js": "^1.0.6"
+  }
 }
