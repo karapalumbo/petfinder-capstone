@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>PetFinder</title>
+    <link rel="stylesheet" href="../static/styles.css" />
     <script src="https://unpkg.com/jquery"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
@@ -12,10 +13,31 @@
   </head>
 
   <body>
-    <h1>Pet Finder</h1>
-    <form id="pet-form">
-      <button>Give me the pets!</button>
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">PetFinder</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link" href="#">Search Pets</a>
+            <a class="nav-link" href="#">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <h1 class="text-center">Helping you find your forever friend</h1>
 
     <div id="pets" class="row"></div>
 
