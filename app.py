@@ -22,7 +22,7 @@ db.drop_all()
 db.create_all()
 
 @app.route("/")
-def login():
+def signup():
     """Show login/register form."""
 
     return redirect('/register')
@@ -36,8 +36,8 @@ def homepage():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Register user."""
-    
+    """Register new user."""
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -59,8 +59,36 @@ def register():
         return render_template('register.html', form=form)
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Login existing user."""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = User.authenticate(username, password)
+
+        if user:
+            session['username'] = user.username
+            return redirect('/pets')
+        else:
+            form.username.errors = ['Invalid username and/or password.']
+            return render_template('register.html', form=form)
+
+    return render_template('login.html', form=form)
+    
+
 @app.route("/about")
 def aboutPet():
     """Show info about pet."""
 
     return render_template("about.html", data=data)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect('/')

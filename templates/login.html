@@ -1,29 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>{% block title %} PetFinder {% endblock %}</title>
-    <link rel="stylesheet" href="../static/styles.css" />
-    <script src="https://unpkg.com/jquery"></script>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
-      crossorigin="anonymous"
-    />
-  </head>
+{% extends 'index.html' %} {% block title %}Pets{% endblock %} {% block
+content%}
 
-  <body>
-    <h1 class="display-5">Login to access your PetFinder account.</h1>
+<h1 class="display-5">Login below.</h1>
 
-    <form method="POST">
-      {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
-      !='hidden' %}
+<form method="POST">
+  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
+  !='hidden' %}
 
-      <p>{{ field.label }} {{ field(class_="form-control") }}</p>
-      {% endfor %}
+  <p>{{ field.label }} {{ field(class_="form-control") }}</p>
+  {% endfor %}
 
-      <button class="btn btn-success" type="submit">Login</button>
-    </form>
-    {% endblock %}
-  </body>
-</html>
+  <button class="btn btn-success" type="submit">Login</button>
+</form>
+{% endblock %}
