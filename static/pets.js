@@ -1,4 +1,5 @@
 const BASE_URL = "https://api.petfinder.com/v2/animals";
+const url = "http://127.0.0.1:5000";
 const API_CLIENT_KEY = "56echxaStqqEbshW5qM7UiIDncLPF96oxy7BXnSGaIublt9wf4";
 const API_SECRET_KEY = "cBpMYemJe2WziCouYm7eoKGbYdH5VaoSwlI0NcIu";
 const $petForm = $("#pet-form");
@@ -19,13 +20,13 @@ function renderPets(pets) {
     } else {
       $imgSrc = pets[i].photos[0].small;
     }
-    console.log(pets[i]);
+    // console.log(pets[i]);
     let pet = `<div class="card m-1" style="width: 18rem;">
-    <img src="${$imgSrc}" class="card-img-top m-1" alt="image of pets">
+    <img src="${$imgSrc}" class="card-img-top m-1 img" alt="image of pets">
     <div class="card-body">
     <h5 class="card-title">${pets[i].name}</h5>
     <p class="card-text">${pets[i].type}</p>
-    <a href="#" class="btn btn-primary">About me!</a>
+    <a href="${url}/about" class="btn btn-primary">About me!</a>
     </div>
     </div>`;
     $petCard.append(pet);
@@ -43,5 +44,6 @@ function handleResponse() {
     });
 }
 
-// $("#pet-form").on("submit", handleResponse);
 handleResponse();
+
+// .description

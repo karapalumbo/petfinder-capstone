@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>{% block title %} PetFinder {% endblock %}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About me!</title>
     <link rel="stylesheet" href="../static/styles.css" />
     <script src="https://unpkg.com/jquery"></script>
     <link
@@ -11,9 +13,7 @@
       crossorigin="anonymous"
     />
   </head>
-
   <body>
-    {% block content %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PetFinder</a>
@@ -38,15 +38,6 @@
       </div>
     </nav>
 
-    <h1 class="text-center">Helping you find your forever friend</h1>
-
-    <div id="pets" class="row"></div>
-
-    <ul id="pet-info"></ul>
-
-    <script src="https://unpkg.com/axios/dist/axios.js"></script>
-    <script src="https://unpkg.com/@petfinder/petfinder-js/dist/petfinder.min.js"></script>
-    <script src="../static/pets.js"></script>
-    {% endblock %}
+    <h1>Hello!</h1>
   </body>
 </html>
