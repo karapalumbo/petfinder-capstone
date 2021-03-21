@@ -31,12 +31,13 @@ def login():
 def homepage():
     """Show homepage."""
 
-    return render_template("index.html")
+    return render_template("pets.html")
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
+    """Register user."""
+    
     form = LoginForm()
 
     if form.validate_on_submit():

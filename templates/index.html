@@ -13,7 +13,6 @@
   </head>
 
   <body>
-    {% block content %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">PetFinder</a>
@@ -29,24 +28,22 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          {% if 'username' in session %}
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-            <a class="nav-link" href="#">Search Pets</a>
+            <a class="nav-link active" aria-current="page" href="/pets">Home</a>
+            <a class="nav-link" href="#">Favorites</a>
             <a class="nav-link" href="#">Contact Us</a>
+            <a class="nav-link" href="#">Logout</a>
+            {% else %}
+            <a class="nav-link" href="#">Login</a>
           </div>
+          {% endif %}
         </div>
       </div>
     </nav>
-
-    <h1 class="text-center">Helping you find your forever friend</h1>
-
-    <div id="pets" class="row"></div>
-
-    <ul id="pet-info"></ul>
-
+    <div>{% block content %}{% endblock %}</div>
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
     <script src="https://unpkg.com/@petfinder/petfinder-js/dist/petfinder.min.js"></script>
     <script src="../static/pets.js"></script>
-    {% endblock %}
   </body>
 </html>
