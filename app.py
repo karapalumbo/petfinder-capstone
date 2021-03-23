@@ -1,5 +1,6 @@
 from secret import API_TOKEN, API_SECRET_KEY, API_CLIENT_KEY
-from flask import Flask, render_template, flash, redirect, request, session
+from flask import Flask, render_template, flash, redirect, request, session, json
+import requests
 from models import connect_db, db, User
 from forms import LoginForm
 from sqlalchemy.exc import IntegrityError
@@ -81,14 +82,29 @@ def login():
     return render_template('login.html', form=form)
     
 
-@app.route("/about")
-def aboutPet():
+@app.route("/about/<int:id>", methods=['GET','POST'])
+def aboutPet(id):
     """Show info about pet."""
 
-    return render_template("about.html", data=data)
+    info = request.get_json()
+
+    # print('************', info['name'])
+    # if request.method == 'POST':
+    #     redirect(f"/about/{id}")
+    # return redirect(f'/about/{pet_info.id}')
+    return render_template("pet_info.html", info=info['name'])
+
 
 
 @app.route('/logout')
 def logout():
     session.pop('username')
     return redirect('/')
+
+
+
+
+
+
+
+

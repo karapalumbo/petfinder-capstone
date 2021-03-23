@@ -13,7 +13,7 @@ let pf = new petfinder.Client({
   secret: API_SECRET_KEY,
 });
 
-function renderPets(pets) {
+async function renderPets(pets) {
   for (let i = 0; i < pets.length; i++) {
     if (pets[i].photos.length === 0) {
       $imgSrc = default_image;
@@ -21,17 +21,33 @@ function renderPets(pets) {
       $imgSrc = pets[i].photos[0].small;
     }
     // console.log(pets[i]);
-    let pet = `<div class="card m-1" style="width: 18rem;">
+    let pet = `<div class="card text-center m-1" style="width: 18rem">
     <img src="${$imgSrc}" class="card-img-top m-1 img" alt="image of pets">
     <div class="card-body">
     <h5 class="card-title">${pets[i].name}</h5>
     <p class="card-text">${pets[i].type}</p>
-    <a href="${url}/about" class="btn btn-primary">About me!</a>
+    <a href="#" id="pet-info-button" class="btn btn-outline-info" data-pet=${pets[i].id}>About me!</a>
     </div>
     </div>`;
     $petCard.append(pet);
   }
+  $petCard.click(async function (e) {
+    if (e.target.tagName === "A") {
+      const petID = $(e.target).data("pet");
+
+      pf.animal.show(petID).then(async (resp) => {
+        // const json = JSON.stringify({ p: resp.data });
+        await axios.post(`${url}/about/${petID}`, resp.data.animal, {
+          headers: {
+            // Overwrite Axios's automatically set Content-Type
+            "Content-Type": "application/json",
+          },
+        });
+      });
+    }
+  });
 }
+// ${url}/about/${pets[i].id}
 
 function handleResponse() {
   pf.animal
