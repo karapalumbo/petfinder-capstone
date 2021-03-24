@@ -1,0 +1,19 @@
+{% extends 'index.html' %} {% block title %}Pets{% endblock %} {% block
+content%}
+
+<div class="card text-center">
+  <div class="card-body">
+    <h3 class="card-title">Contact us to adopt {{ pet_info.animal.name }}!</h3>
+    <p class="card-text"></p>
+    <p>
+      Address: {{ pet_info.animal.contact.address.address1 }}, {{
+      pet_info.animal.contact.address.city }}, {{
+      pet_info.animal.contact.address.state }}, {{
+      pet_info.animal.contact.address.postcode }}
+    </p>
+    <p>Phone: {{ pet_info.animal.contact.phone }}</p>
+    <p>Email: {{ pet_info.animal.contact.email }}</p>
+  </div>
+</div>
+
+{% endblock %}

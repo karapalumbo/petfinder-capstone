@@ -19,7 +19,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">PetFinder</a>
+        <a class="navbar-brand" href="/pets">PetFinder</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -34,9 +34,9 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           {% if 'username' in session %}
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="/pets">Home</a>
+            <!-- <a class="nav-link active" aria-current="page" href="/pets">Home</a> -->
             <a class="nav-link" href="#">Favorites</a>
-            <a class="nav-link" href="#">Contact Us</a>
+            <!-- <a class="nav-link" href="#">Contact Us</a> -->
             <a class="nav-link" href="/logout">Logout</a>
             {% else %}
             <a class="nav-link" href="/login">Login</a>

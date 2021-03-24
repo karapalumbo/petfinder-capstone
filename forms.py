@@ -9,3 +9,4 @@ class LoginForm(FlaskForm):
     first_name = StringField("First Name", validators=[InputRequired("First name can't be blank")])
     last_name = StringField("Last Name", validators=[InputRequired("Last name can't be blank")])
 
+
