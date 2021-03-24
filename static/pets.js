@@ -26,28 +26,12 @@ async function renderPets(pets) {
     <div class="card-body">
     <h5 class="card-title">${pets[i].name}</h5>
     <p class="card-text">${pets[i].type}</p>
-    <a href="#" id="pet-info-button" class="btn btn-outline-info" data-pet=${pets[i].id}>About me!</a>
+    <a href="${url}/about/${pets[i].id}" id="pet-info-button" class="btn btn-outline-dark" data-pet=${pets[i].id}>About me!</a>
     </div>
     </div>`;
     $petCard.append(pet);
   }
-  $petCard.click(async function (e) {
-    if (e.target.tagName === "A") {
-      const petID = $(e.target).data("pet");
-
-      pf.animal.show(petID).then(async (resp) => {
-        // const json = JSON.stringify({ p: resp.data });
-        await axios.post(`${url}/about/${petID}`, resp.data.animal, {
-          headers: {
-            // Overwrite Axios's automatically set Content-Type
-            "Content-Type": "application/json",
-          },
-        });
-      });
-    }
-  });
 }
-// ${url}/about/${pets[i].id}
 
 function handleResponse() {
   pf.animal

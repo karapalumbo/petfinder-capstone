@@ -82,17 +82,15 @@ def login():
     return render_template('login.html', form=form)
     
 
-@app.route("/about/<int:id>", methods=['GET','POST'])
+@app.route("/about/<int:id>", methods=['GET'])
 def aboutPet(id):
     """Show info about pet."""
 
-    info = request.get_json()
-
-    # print('************', info['name'])
+    print('************', id)
     # if request.method == 'POST':
     #     redirect(f"/about/{id}")
-    # return redirect(f'/about/{pet_info.id}')
-    return render_template("pet_info.html", info=info['name'])
+    # return "hello"
+    return render_template("pet_info.html", id=id)
 
 
 
