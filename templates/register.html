@@ -1,7 +1,7 @@
 {% extends 'index.html' %} {% block title %}Pets{% endblock %} {% block
 content%}
 
-<h1 class="display-5">Register below to become a PetFinder member!</h1>
+<h1 class="display-5">Register to become a member!</h1>
 <form method="POST">
   {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
   'hidden' %}

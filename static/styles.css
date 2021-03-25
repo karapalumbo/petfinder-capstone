@@ -2,3 +2,19 @@
   width: 262px;
   height: 262px;
 }
+
+.pet-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#pet-info-button {
+  width: 100%;
+}
+
+.pet-name-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}

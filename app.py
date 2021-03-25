@@ -1,17 +1,15 @@
 from secret import API_TOKEN, API_SECRET_KEY, API_CLIENT_KEY
 from flask import Flask, render_template, flash, redirect, request, session, json
 import requests
-from requests_oauthlib import OAuth1Session
-from models import connect_db, db, User
-from forms import LoginForm
+from models import connect_db, db, User, Favorite
+from forms import LoginForm, UserAddForm
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.sql import text
 # from flask_debugtoolbar import DebugToolbarExtension
 
 BASE_URL = "https://api.petfinder.com/v2/animals"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjY5NGViMzA0MGQyZDYxYzgzMTc4MmFkZTk4NGFiNTcwMmZiNzNlMGFhMDg3ZjljNGM4ODcwZTdmOTE1MDE3MTk5NTEyM2Q4MDdiZjU3N2Q1IiwiaWF0IjoxNjE2NjE0Mjg2LCJuYmYiOjE2MTY2MTQyODYsImV4cCI6MTYxNjYxNzg4Niwic3ViIjoiIiwic2NvcGVzIjpbXX0.vBhl9VeOrZLkIFP3RpOj3qOL1UbgMMmoL2TpXhj6Z3j9BQcB9SfvzsJwGrZKn7w8_14Ag7BdfmtKkDHz0FNEXVH4zCcN_5YXzzOM7_dLV1WVWm41BdSjBAgaDVV27PajXCmya-2uRvi-OyDXGPqSGLX1w9CjkU_L2yBNZKl23H3zX54rn5dx0axgEzcsUUO-zGuGT3xVzSKW1mMThyGw_BIziAmVZc_KEzlS5xCU5hlNe5NIfP6NJ-g9vXSTs7IlvoqR9YQ-QcHlnNXyrW71mkrJLPnGVlLG4w71sIkMbRm2EQUR-M56WittMKexJfUSQZkAHY16JwED-xtsLiNeCA"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjRlODRjOGQ0M2E0MTAwZjU3MmFjYzZjMTlmM2JiOWUwMWU4MTkwOWQ4NzdhYTFkOTYzOWU4NDlkZTNiNDJiNWE1MjQ1MTk3ZGJkNDk5ZjVhIiwiaWF0IjoxNjE2NjI2MjkxLCJuYmYiOjE2MTY2MjYyOTEsImV4cCI6MTYxNjYyOTg5MSwic3ViIjoiIiwic2NvcGVzIjpbXX0.GETr7-TZP8DAYo0sPzHVnjz0oO5EkcGssJejRXDM1_zL2sLXe4vuxhTgIWdYjJ9vVsueE8nWEdO1c1wkYg1Z2uKWSCLdI0VcEhiNvODHZTx-R1GTa_zQ7hq6R_d7nySVq4sUIpYO67_IbtyftnCfbri-u90SDwpKOIZMTrXHNumOHUjh79cyUb95LxI8qfjm4IwYnkV62BHW00Jh919wy5BE_8GEabGbaBUFvgwAey5_e8Tq8cyDXUtrorync-68ehHm7XchBkapHi0my_dAZVaDXWaKbH1xrabXiXbn6iqRU_kmUjdeewFySAiuQOgHLihGNEtzqYIp6kH6xgklbg"
 
-app = Flask(__name__)\
+app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///petfinder"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -21,20 +19,15 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 # debug = DebugToolbarExtension(app)
 
 connect_db(app)
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 
-@app.route("/")
-def signup():
-    """Show login/register form."""
+
+@app.route('/')
+def homepage():
+    """Show register form."""
 
     return redirect('/register')
-
-@app.route("/pets")
-def homepage():
-    """Show homepage."""
-
-    return render_template("pets.html")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -78,14 +71,21 @@ def login():
             session['username'] = user.username
             return redirect('/pets')
         else:
-            form.username.errors = ['Invalid username and/or password.']
             return render_template('register.html', form=form)
 
     return render_template('login.html', form=form)
     
 
-@app.route("/about/<int:id>", methods=['GET'])
-def aboutPet(id):
+@app.route("/pets")
+def pets():
+    """Show all pets."""
+
+    user = User.query.all()
+    return render_template("pets.html", user=user)
+
+
+@app.route("/pet/<int:pet_id>", methods=['GET'])
+def aboutPet(pet_id):
     """Show info about pet."""
 
     headers = {
@@ -99,8 +99,8 @@ def aboutPet(id):
     return render_template("pet_info.html", pet_info=pet_info)
 
 
-@app.route("/contact/<int:id>", methods=['GET'])
-def contactOrg(id):
+@app.route("/contact/<int:pet_id>", methods=['GET'])
+def contactOrg(pet_id):
     """Show orgs contact info."""
 
     headers = {
@@ -113,9 +113,18 @@ def contactOrg(id):
     return render_template("orgs.html", pet_info=pet_info)
 
 
+@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+def show_favorites(user_id):
+        """show user favorites."""
+
+        user = User.query.get_or_404(user_id)
+        print("*******************", user_id)
+        return render_template('favorites.html', user=user, favorites=user.favorites)
+
+
 
 @app.route('/logout')
 def logout():
     session.pop('username')
-    return redirect('/')
+    return redirect('/login')
 

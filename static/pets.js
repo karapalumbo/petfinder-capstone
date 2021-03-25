@@ -21,10 +21,13 @@ async function renderPets(pets) {
     }
     let pet = `<div class="card text-center m-1" style="width: 18rem">
     <img src="${$imgSrc}" class="card-img-top m-1 img" alt="image of pets">
-    <div class="card-body">
-    <h5 class="card-title">${pets[i].name}</h5>
+    <div class="card-body pet-card">
+    <div class="pet-name-container">
+      <h5 class="card-title">${pets[i].name}</h5>
+      <button type="button" class="btn btn-outline-danger"><i class="fa fa-heart"></i></button>
+    </div>
     <p class="card-text">${pets[i].type}</p>
-    <a href="${url}/about/${pets[i].id}" id="pet-info-button" class="btn btn-outline-dark" data-pet=${pets[i].id}>About me!</a>
+    <a href="${url}/pet/${pets[i].id}" id="pet-info-button" class="btn btn-outline-dark" data-pet=${pets[i].id}>About me!</a>
     </div>
     </div>`;
     $petCard.append(pet);
