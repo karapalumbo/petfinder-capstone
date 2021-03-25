@@ -1,5 +1,5 @@
 from secret import API_TOKEN, API_SECRET_KEY, API_CLIENT_KEY
-from flask import Flask, render_template, flash, redirect, request, session, json
+from flask import Flask, render_template, flash, redirect, request, session, json, g
 import requests
 from models import connect_db, db, User, Favorite
 from forms import LoginForm, UserAddForm
@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 
 BASE_URL = "https://api.petfinder.com/v2/animals"
 TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjRlODRjOGQ0M2E0MTAwZjU3MmFjYzZjMTlmM2JiOWUwMWU4MTkwOWQ4NzdhYTFkOTYzOWU4NDlkZTNiNDJiNWE1MjQ1MTk3ZGJkNDk5ZjVhIiwiaWF0IjoxNjE2NjI2MjkxLCJuYmYiOjE2MTY2MjYyOTEsImV4cCI6MTYxNjYyOTg5MSwic3ViIjoiIiwic2NvcGVzIjpbXX0.GETr7-TZP8DAYo0sPzHVnjz0oO5EkcGssJejRXDM1_zL2sLXe4vuxhTgIWdYjJ9vVsueE8nWEdO1c1wkYg1Z2uKWSCLdI0VcEhiNvODHZTx-R1GTa_zQ7hq6R_d7nySVq4sUIpYO67_IbtyftnCfbri-u90SDwpKOIZMTrXHNumOHUjh79cyUb95LxI8qfjm4IwYnkV62BHW00Jh919wy5BE_8GEabGbaBUFvgwAey5_e8Tq8cyDXUtrorync-68ehHm7XchBkapHi0my_dAZVaDXWaKbH1xrabXiXbn6iqRU_kmUjdeewFySAiuQOgHLihGNEtzqYIp6kH6xgklbg"
+CURR_USER_KEY = "current_user"
 
 app = Flask(__name__)
 
@@ -21,6 +22,30 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 # db.drop_all()
 # db.create_all()
+
+
+@app.before_request
+def add_user_to_g():
+    """Add user to Flask global."""
+
+    if CURR_USER_KEY in session:
+        g.user = User.query.get(session[CURR_USER_KEY])
+
+    else:
+        g.user = None
+
+
+def do_login(user):
+    """Log in user."""
+
+    session[CURR_USER_KEY] = user.id
+
+
+def do_logout():
+    """Logout user."""
+
+    if CURR_USER_KEY in session:
+        del session[CURR_USER_KEY]
 
 
 @app.route('/')
@@ -68,10 +93,11 @@ def login():
         user = User.authenticate(username, password)
 
         if user:
-            session['username'] = user.username
+            do_login(user)
+            # session['username'] = user.username
             return redirect('/pets')
-        else:
-            return render_template('register.html', form=form)
+        # else:
+        #     return render_template('register.html', form=form)
 
     return render_template('login.html', form=form)
     
@@ -92,7 +118,7 @@ def aboutPet(pet_id):
     'Authorization': f'Bearer {TOKEN}',
     }
 
-    response = requests.get(f'{BASE_URL}/{id}', headers=headers)
+    response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
     pet_info = response.json()
 
     print('********',pet_info)
@@ -107,7 +133,7 @@ def contactOrg(pet_id):
     'Authorization': f'Bearer {TOKEN}',
     }
 
-    response = requests.get(f'{BASE_URL}/{id}', headers=headers)
+    response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
     pet_info = response.json()
 
     return render_template("orgs.html", pet_info=pet_info)
@@ -118,13 +144,39 @@ def show_favorites(user_id):
         """show user favorites."""
 
         user = User.query.get_or_404(user_id)
-        print("*******************", user_id)
+
         return render_template('favorites.html', user=user, favorites=user.favorites)
 
+
+@app.route('/favorite/<int:fav_id>/<int:pet_id>', methods=['POST'])
+def add_favorite(fav_id, pet_id):
+    """add pet to favorites."""
+
+    headers = {
+    'Authorization': f'Bearer {TOKEN}',
+    }
+
+    response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
+    pet_info = response.json()
+
+    fav_pet = Favorite.query.get_or_404(fav_id)
+    if fav_pet.user_id == g.user.id:
+        return abort(403)
+
+    user_fav = g.user.favorites
+
+    if fav_pet in user_fav:
+        g.user.favorites = [favorite for favorite in user_favorites if favorite != fav_pet]
+    else:
+        g.user.favorites.append(fav_pet)
+
+    db.session.commit()
+
+    return redirect('/pets')
 
 
 @app.route('/logout')
 def logout():
-    session.pop('username')
+    session.pop(CURR_USER_KEY)
     return redirect('/login')
 

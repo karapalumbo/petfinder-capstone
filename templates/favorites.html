@@ -2,8 +2,12 @@
 content%}
 
 <div>
-  <p>{{ user.first_name }}</p>
-  <p>{{ likes }}</p>
+  <p>{{ user.first_name[0]|upper }}{{ user.first_name[1:] }}'s Favorites!</p>
+  {% if favorites|length == 0 %}
+  <p>Click <a href="/pets">here</a> to add favorites!</p>
+  {% else %}
+  <p>{{ favorites }}</p>
+  {% endif %}
 </div>
 
 {% endblock %}
