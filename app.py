@@ -20,8 +20,8 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 # debug = DebugToolbarExtension(app)
 
 connect_db(app)
-# db.drop_all()
-# db.create_all()
+
+db.create_all()
 
 
 @app.before_request
@@ -144,8 +144,8 @@ def show_favorites(user_id):
         return render_template('favorites.html', user=user, favorites=user.favorites)
 
 
-@app.route('/favorite/<int:fav_id>/<int:pet_id>', methods=['POST'])
-def add_favorite(fav_id, pet_id):
+@app.route('/favorite/<int:pet_id>', methods=['POST'])
+def add_favorite(pet_id):
     """add pet to favorites."""
 
     headers = {
@@ -155,18 +155,16 @@ def add_favorite(fav_id, pet_id):
     response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
     pet_info = response.json()
 
-    fav_pet = Favorite.query.get_or_404(fav_id)
-    if fav_pet.user_id == g.user.id:
-        return abort(403)
+    # fav_pet = Favorite.query.all()
 
-    user_fav = g.user.favorites
+    # user_fav = g.user.favorites
 
-    if fav_pet in user_fav:
-        g.user.favorites = [favorite for favorite in user_favorites if favorite != fav_pet]
-    else:
-        g.user.favorites.append(fav_pet)
+    # if fav_pet in user_fav:
+    #     g.user.favorites = [favorite for favorite in user_favorites if favorite != fav_pet]
+    # else:
+    #     g.user.favorites.append(fav_pet)
 
-    db.session.commit()
+    # db.session.commit()
 
     return redirect('/pets')
 

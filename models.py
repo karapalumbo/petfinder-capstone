@@ -6,13 +6,6 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 
-def connect_db(app):
-    """Connect to database."""
-
-    db.app = app
-    db.init_app(app)
-
-
 class User(db.Model):
     """User in the system."""   
 
@@ -27,6 +20,7 @@ class User(db.Model):
 
     favorites = db.relationship("Favorite")
     
+
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
 
@@ -62,3 +56,13 @@ class Favorite(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+
+
+
+def connect_db(app):
+    """Connect to database."""
+
+    db.app = app
+    db.init_app(app)
+
+
