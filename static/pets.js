@@ -24,7 +24,7 @@ async function renderPets(pets) {
     <div class="card-body pet-card">
     <div class="pet-name-container">
       <h5 class="card-title">${pets[i].name}</h5>
-      <button type="button" class="btn btn-outline-danger" data-pet=${pets[i].id}><i class="fa fa-heart"></i></button>
+      <button onclick=“#” type="button" class="btn btn-outline-danger" data-pet=${pets[i].id}><i class="fa fa-heart"></i></button>
     </div>
     <p class="card-text">${pets[i].type}</p>
     <a href="${url}/pet/${pets[i].id}" id="pet-info-button" class="btn btn-outline-dark" data-pet=${pets[i].id}>About me!</a>

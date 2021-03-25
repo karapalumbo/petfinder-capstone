@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
 BASE_URL = "https://api.petfinder.com/v2/animals"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjRlODRjOGQ0M2E0MTAwZjU3MmFjYzZjMTlmM2JiOWUwMWU4MTkwOWQ4NzdhYTFkOTYzOWU4NDlkZTNiNDJiNWE1MjQ1MTk3ZGJkNDk5ZjVhIiwiaWF0IjoxNjE2NjI2MjkxLCJuYmYiOjE2MTY2MjYyOTEsImV4cCI6MTYxNjYyOTg5MSwic3ViIjoiIiwic2NvcGVzIjpbXX0.GETr7-TZP8DAYo0sPzHVnjz0oO5EkcGssJejRXDM1_zL2sLXe4vuxhTgIWdYjJ9vVsueE8nWEdO1c1wkYg1Z2uKWSCLdI0VcEhiNvODHZTx-R1GTa_zQ7hq6R_d7nySVq4sUIpYO67_IbtyftnCfbri-u90SDwpKOIZMTrXHNumOHUjh79cyUb95LxI8qfjm4IwYnkV62BHW00Jh919wy5BE_8GEabGbaBUFvgwAey5_e8Tq8cyDXUtrorync-68ehHm7XchBkapHi0my_dAZVaDXWaKbH1xrabXiXbn6iqRU_kmUjdeewFySAiuQOgHLihGNEtzqYIp6kH6xgklbg"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjMyMzMxZmExZDdjNDUzYzA4MDU3N2JhMWM4MzliYjdkNTc0Mzg0NGNlZTAxM2I0YmIxMDA4N2Y1YTU2NmYzZDdiNWQxMmI3NmJmNGJkNWZiIiwiaWF0IjoxNjE2NjkyNzE1LCJuYmYiOjE2MTY2OTI3MTUsImV4cCI6MTYxNjY5NjMxNSwic3ViIjoiIiwic2NvcGVzIjpbXX0.AUbBMyTo1-ALDueYkf-gukRnirnDuk98MzjiYgf-ATXnZ9WxQHPG1ECihkwgn8rM8qvCTe4YLZdcQJvRPW2lhenSWjH8mgdKKrxhhGUYLPPoxuMCtv-8WH6Srlg9CiDhKUtZ3dNAITCDUAExMg_mu9uAM5eqVXCpQMRjmAYHzZSM34aauEE_aIcTUoAvbfFpgb-xwHRdWiusS-PYunYIGY4o4GSKTg0HUh207rk8Ox3GghF9Dz0UQE9LXWgZENJyzWYBujQoYEUJjkGv5rtCcOKR1lZVVaKkNeW3EhcglGHoNSV6zT0bDKb9HPDDYSgsvj9bcpy3M2_sRccuQ8Z8Pg"
 CURR_USER_KEY = "current_user"
 
 app = Flask(__name__)
@@ -94,10 +94,7 @@ def login():
 
         if user:
             do_login(user)
-            # session['username'] = user.username
             return redirect('/pets')
-        # else:
-        #     return render_template('register.html', form=form)
 
     return render_template('login.html', form=form)
     
@@ -121,7 +118,6 @@ def aboutPet(pet_id):
     response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
     pet_info = response.json()
 
-    print('********',pet_info)
     return render_template("pet_info.html", pet_info=pet_info)
 
 
