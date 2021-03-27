@@ -18,7 +18,7 @@ class User(db.Model):
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
 
-    favorites = db.relationship("Favorite")
+    pets = db.relationship("Pet", secondary="favorites", backref='users')
     
 
     @classmethod
@@ -56,6 +56,15 @@ class Favorite(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+    pet_id = db.Column(db.Integer, db.ForeignKey('pets.id', ondelete='cascade'))
+
+
+class Pet(db.Model):
+    """pets table."""
+
+    __tablename__ = 'pets'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
 
 
 
