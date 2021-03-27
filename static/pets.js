@@ -4,6 +4,7 @@ const API_CLIENT_KEY = "56echxaStqqEbshW5qM7UiIDncLPF96oxy7BXnSGaIublt9wf4";
 const API_SECRET_KEY = "cBpMYemJe2WziCouYm7eoKGbYdH5VaoSwlI0NcIu";
 // let petCard = document.querySelector("#pets");
 let $petCard = $("#pets");
+let $homeNavLink = $("#home");
 const $showPets = $("#show-pets");
 let $imgSrc;
 const default_image =
@@ -37,16 +38,15 @@ async function renderPets(p) {
   }
 }
 
-$showPets.click(function () {
-  const data = JSON.parse(localStorage.getItem("pets"));
-  renderPets(data);
-});
-
 function handleResponse() {
   pf.animal
-    .search()
+    .search({ page: 1, limit: 20 })
     .then(function (response) {
-      localStorage.setItem("pets", JSON.stringify(response.data.animals));
+      if (!localStorage.getItem("pets")) {
+        localStorage.setItem("pets", JSON.stringify(response.data.animals));
+      } else {
+        renderPets(JSON.parse(localStorage.getItem("pets")));
+      }
     })
     .catch(function (error) {
       console.log(error);

@@ -34,7 +34,13 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           {% if g.user %}
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="/pets">Home</a>
+            <a
+              class="nav-link active"
+              aria-current="page"
+              id="home"
+              href="/pets"
+              >Home</a
+            >
             <a class="nav-link" href="/users/{{ g.user.id }}/favorites"
               >Favorites</a
             >

@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
 BASE_URL = "https://api.petfinder.com/v2/animals"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6ImU5YzA0MjI0M2QzM2U4ZjE4M2I3MGZmMjMxMGFkNDc1OGU1MTBkMGRhNjIzMjJhNDk3Y2Q4NDZhZWYyMDc4OTJjOWJiMzg1MDMyNTYxNDMzIiwiaWF0IjoxNjE2Nzg0NjcwLCJuYmYiOjE2MTY3ODQ2NzAsImV4cCI6MTYxNjc4ODI3MCwic3ViIjoiIiwic2NvcGVzIjpbXX0.Fp784gRL7GHisyJcHKpYFKIjUDA5GA8L5HRmoJ9OIgJx7ZlhM6ruHBtBtmW6z96AswD5zaiZyy-DQ94fhIbPgZODC2q3ZzodYRo1_2j3jEAneyIvJXR2Inw8bqd1Mc7WgYFjOdICjAinFISZsg4pOlkmH3EPdvzrTmpZYIjTE11NjXKMgszbi2T0DgMv6_T52rzxgJksLeR7wYXxc5AhEVFgDZqFQmoLOrfZ1pkyiBcNzK7QV5Q2uyX7GffBz4sAFsKxntnSoh8Y3pREYiKCCe7aVvbuGZ8JMyiQt4QQEeBbpQ-VKW5WjOgS6lOXyEYrNC509fiKyWtLKrw1pbw-pA"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6ImE4YTVhMjUyMzFmMDlkNWU3NzVjMGYzNjNlMTc4NDA1NjdkZTUwMjNiOTVlMDk2ZTFjMmJmODdhMDFiNzlmOTU3M2RmZGE2ZTQ2ODk4ZmY5IiwiaWF0IjoxNjE2ODU2ODE2LCJuYmYiOjE2MTY4NTY4MTYsImV4cCI6MTYxNjg2MDQxNiwic3ViIjoiIiwic2NvcGVzIjpbXX0.MmhlTwEAkGlKNe70XuYJZcM0Z7bef-cHRp8hF9XZkZR138HYqsHkbw70_eXB6yQGndHwtZ6EHhNTK-kbJxXy6XZ3t8HJi2zDLrkr_TBsQPCqok8udkQWApaDJvF_AOSKO3eiuyOtQS7qU_jiLTQOV3DJSOP9lXhnQvyPdJ8E3B-h6Agg0sj3E9CINcKJQ9DTS1wwGItpdXNs7dQzUwd_Y6rBq-_oqgc_yJUPbfjIbgkKDHbLI93W7OIqrpaFeqZGd0d4LDoS2pjHC99_fjqkg-OtCELE3EdMBzuimQFau5ep72l_ks22gZkjlwN2raEs00e4_rud0yv0ArcKiVBo7Q"
 CURR_USER_KEY = "current_user"
 
 app = Flask(__name__)
@@ -108,6 +108,7 @@ def pets():
         return redirect("/register")
 
     user = User.query.all()
+    
     return render_template("pets.html", user=user)
 
 
@@ -160,39 +161,40 @@ def show_favorites(user_id):
         return render_template('favorites.html', user=user, fav_pets=user.pets)
 
 
-# @app.route('/favorite/<int:pet_id>', methods=['GET','POST'])
-# def add_favorite(pet_id):
-#     """add pet to favorites."""
+@app.route('/favorite/<int:pet_id>', methods=['GET','POST'])
+def add_favorite(pet_id):
+    """add pet to favorites."""
 
-#     if not g.user:
-#         flash("Access unauthorized.", "danger")
-#         return redirect("/register")
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/register")
 
-#     headers = {
-#     'Authorization': f'Bearer {TOKEN}',
-#     }
+    if request.method == 'GET':
+        
+        headers = {
+        'Authorization': f'Bearer {TOKEN}',
+        }
 
-#     response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
-#     pet_info = response.json()
+        response = requests.get(f'{BASE_URL}/{pet_id}', headers=headers)
+        pet_info = response.json()
 
-#     user = User.query.all()
-#     favorites = Favorite.query.all()
+        return redirect('/pets')
 
-#     pet = Pet(
-#         name=pet_info['animal']['name']
-#     )
 
-#     fav_pet = Favorite(
-#         user_id=db.session.query(User.id),
-#         pet_id=pet_info['animal']['id']
-#     )
+    pet = Pet(
+        name=pet_info['animal']['name']
+    )
 
-#     db.session.add(pet, fav_pet)
-#     db.session.commit()
+    fav_pet = Favorite(
+        user_id=db.session.query(User.id),
+        pet_id=pet_info['animal']['id']
+    )
 
-#     return redirect('/pets')
+    db.session.add(pet, fav_pet)
+    db.session.commit()
 
-    # return render_template("favorites.html",)
+        
+    return render_template("favorites.html",)
 
 
 @app.route('/logout')

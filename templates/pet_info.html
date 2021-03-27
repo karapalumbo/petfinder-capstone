@@ -4,13 +4,13 @@ content%}
 
 <div class="card text-center">
     <div class="card-body">
-        <h3 class="card-title">About {{ pet_info.animal.name }}!</h3>
-        <p class="card-text">{% if pet_info.animal.description == None %}
+        <h3 class="card-title">About {{ pet_info['animal'].name }}!</h3>
+        <p class="card-text">{% if pet_info['animal'].description == None %}
         <p>Description coming soon!</p>
         {% else %}
-        <p>{{ pet_info.animal.description }}</p>
+        <p>{{ pet_info['animal'].description }}</p>
         {% endif %}</p>
-        <a href="/contact/{{ pet_info.animal.id }}" class="btn btn-outline-dark">Adopt me!</a>
+        <a href="/contact/{{ pet_info['animal'].id }}" class="btn btn-outline-dark">Adopt me!</a>
     </div>
 </div>
 
