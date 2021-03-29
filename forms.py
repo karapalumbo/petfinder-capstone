@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField
 from wtforms.validators import Email, InputRequired, DataRequired, Length
 
 class LoginForm(FlaskForm):
@@ -21,3 +21,11 @@ class UserAddForm(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
 
+class PetTypeForm(FlaskForm):
+    """Form for searching by pet type."""
+
+    species = SelectField('Species', choices=[('cat'), ('dog'), ('rabbit')])
+    gender = SelectField('Gender', choices=[('male'), ('female')])
+    age = SelectField('Age', choices=[('baby'), ('young'), ('adult'), ('senior')])
+    size = SelectField("Size", choices=[('small'), ('medium'), ('large')])
+    color = SelectField("Color", choices=[('black'), ('white'), ('brown'), ('cream')])

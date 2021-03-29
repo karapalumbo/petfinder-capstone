@@ -1,10 +1,18 @@
 {% extends 'index.html' %} {% block title %}PetFinder{% endblock %} {% block
 content%}
 
-<h1 class="text-center">Helping you find your forever friend</h1>
+<h1 class="text-center">Search pets by type</h1>
 
-{% for p in pet_info['animals'] %}
+<form method="POST">
+  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
+  !='hidden' %}
 
+  <p>{{ field.label }} {{ field(class_="form-control") }}</p>
+  {% endfor %}
+
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+{% for p in animal['animals'] %}
 <div id="pets" class="row">
   <div class="card text-center m-1" style="width: 18rem">
     {% if p['photos']|length == 0 %}
@@ -43,5 +51,9 @@ content%}
     </div>
   </div>
 </div>
-
-{% endfor %} {% endblock %}
+{% endfor %} {% if animal['animals']|length == 0 %}
+<p>
+  Oh no! We couldn't find any animals with your criteria. Be sure to search
+  again!
+</p>
+{% endif %} {% endblock %}

@@ -64,9 +64,12 @@ class Pet(db.Model):
 
     __tablename__ = 'pets'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-
-
+    name = db.Column(db.String(30), nullable=True)
+    species = db.Column(db.Text, nullable=True)
+    gender = db.Column(db.Text, nullable=True)
+    age = db.Column(db.Text, nullable=True)
+    size = db.Column(db.Text, nullable=True)
+    color = db.Column(db.Text, nullable=True)
 
 def connect_db(app):
     """Connect to database."""
