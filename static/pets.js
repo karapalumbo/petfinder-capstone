@@ -2,9 +2,8 @@ const BASE_URL = "https://api.petfinder.com/v2/animals";
 const url = "http://127.0.0.1:5000";
 const API_CLIENT_KEY = "56echxaStqqEbshW5qM7UiIDncLPF96oxy7BXnSGaIublt9wf4";
 const API_SECRET_KEY = "cBpMYemJe2WziCouYm7eoKGbYdH5VaoSwlI0NcIu";
-// let petCard = document.querySelector("#pets");
 let $petCard = $("#pets");
-let $homeNavLink = $("#home");
+// let $homeNavLink = $("#home");
 const $showPets = $("#show-pets");
 let $imgSrc;
 const default_image =
@@ -47,6 +46,9 @@ function handleResponse() {
       } else {
         renderPets(JSON.parse(localStorage.getItem("pets")));
       }
+      axios.post(`${url}/pets`, {
+        data: localStorage.getItem("pets"),
+      });
     })
     .catch(function (error) {
       console.log(error);
