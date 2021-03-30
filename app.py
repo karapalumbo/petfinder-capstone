@@ -2,13 +2,13 @@ from secret import API_TOKEN, API_SECRET_KEY, API_CLIENT_KEY
 from flask import Flask, render_template, flash, redirect, request, session, json, g
 import requests
 import petpy
-from models import connect_db, db, User, Favorite, Pet
+from models import connect_db, db, User, Pet
 from forms import LoginForm, UserAddForm, PetTypeForm
 from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
 BASE_URL = "https://api.petfinder.com/v2"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6Ijg5MzE5MTY1Njk4NWU5OTVhMDc5OWViYTgzNGQ4ZWQ2ZDg1OTAyYWVmNzY0MWJiZTEwN2I0OTg3ZTIxNzYxZjAxNWFlMDhlODU0NmY2YWZkIiwiaWF0IjoxNjE3MTIzMDY4LCJuYmYiOjE2MTcxMjMwNjgsImV4cCI6MTYxNzEyNjY2OCwic3ViIjoiIiwic2NvcGVzIjpbXX0.F9ji5l2quU5_DP-IVGcmB7whQCC7h2402_0gZ1L4fBVbQYt6J-GaX4JWD2H7_6brHkDT8iVvKuVd8--FCfc0XF0q9CDGZxR-jsnGDxoiwkRUZ7GNqig2NaX-_YGbNmUAdER-OEDrovXhGSjQwikocx9HXmx2BXd5psGhCBlxVtFA55jhIRkg1POPSGiTlz0BHh_oon18E-Jk_EsvJeon-h60y-QVd03U6Bhg9_E8wHORHSnSaxe6WFkcqCp-PnWvU40xxjb7rZmvK0VoVn33Hplb29dNK7Z-rJuxDnKx3Bc10Q7nduvUYMLJtFH8kIsI8QFxZRMF28m-igR2PJoegA"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6ImVmMWIwZDhmZjEyNjc1ZDY0ZTQ4MTYyNmFjZTY5M2YzYWUyYzgxMjY4MjVlNmVmY2M5ZDgxZTM2NjBjYjMyYTJlNjhjMWU5NTJiNjRkZmY2IiwiaWF0IjoxNjE3MTMyNzgxLCJuYmYiOjE2MTcxMzI3ODEsImV4cCI6MTYxNzEzNjM4MSwic3ViIjoiIiwic2NvcGVzIjpbXX0.a1I4IstpzDN2hdT6hooeNtSnBfWnz0RIbTyyzWbJweG5JKBtg1cPagn67nsu3DSBJdkNMn1SUaZFRt-aFv-U7BLeM7SYew4Av7rCnCqOOOxS4BiYBCsjwSIPHeTZyUztsXe9Zwf5qBaZMg-OEeuqbGa7V1uptOmXsPuy_XBgLWT4Hux3SlDOgfKmkKH-yEyLEIlAh57UJ5m2Z16vgApnxaaDcToj4dLsHFQ4k6F2SaO4ZzBFH_ftuUz16aCsL-qiO_y7Cw1OJZgI6z-Fd2M4izI1NhlQUXNz62hy6WEs6YAnoRThfXQShQXhsad_OF8GnZXYxrJxNFR5vXcibkarwA"
 CURR_USER_KEY = "current_user"
 
 pf = petpy.Petfinder(key=API_CLIENT_KEY, secret=API_SECRET_KEY)
@@ -61,23 +61,27 @@ def homepage():
 def register():
     """Register new user."""
 
-    form = LoginForm()
+    form = UserAddForm()
 
     if form.validate_on_submit():
-        username = form.username.data 
-        password = form.password.data 
-        email = form.email.data 
-        first_name = form.first_name.data 
-        last_name = form.last_name.data
-
-        user = User.register(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+        try:
+            user = User.register(
+                username = form.username.data,
+                password = form.password.data,
+                email = form.email.data,
+                first_name = form.first_name.data,
+                last_name = form.last_name.data,
+            )
+            db.session.add(user)
+            db.session.commit()
         
-        db.session.add(user)
-        db.session.commit()
-        session["username"] = user.username
-
+        except IntegrityError:
+            flash("Username already taken", 'danger')
+            return render_template('register.html', form=form)
+        
+        do_login(user)
         return redirect('/pets')
-
+    
     else:
         return render_template('register.html', form=form)
 
@@ -96,7 +100,10 @@ def login():
 
         if user:
             do_login(user)
+            flash(f"Welcome back {user.username}!", "success")
             return redirect('/pets')
+        
+        flash("Invalid credentials.", 'danger')
 
     return render_template('login.html', form=form)
     
@@ -106,7 +113,7 @@ def pets():
     """Show all pets."""
 
     if not g.user:
-        flash("Access unauthorized.", "danger")
+        flash("Please login or register.", "danger")
         return redirect("/register")
 
     user = User.query.all()
@@ -118,10 +125,6 @@ def pets():
     response = requests.get(f'{BASE_URL}/animals', headers=headers)
     pet_info = response.json()
 
-    # js_data = request.get_json()
-    # print('****************', js_data)
-    # return js_data
-    
     return render_template("pets.html", user=user, pet_info=pet_info)
 
 
@@ -130,7 +133,7 @@ def pet_types():
     """Seach by type."""
 
     if not g.user:
-        flash("Access unauthorized.", "danger")
+        flash("Please login or register.", "danger")
         return redirect("/register")
 
     form = PetTypeForm()
@@ -165,7 +168,7 @@ def aboutPet(pet_id):
     """Show info about pet."""
 
     if not g.user:
-        flash("Access unauthorized.", "danger")
+        flash("Please login or register.", "danger")
         return redirect("/register")
 
     headers = {
@@ -183,7 +186,7 @@ def contactOrg(pet_id):
     """Show orgs contact info."""
 
     if not g.user:
-        flash("Access unauthorized.", "danger")
+        flash("Please login or register.", "danger")
         return redirect("/register")
 
     headers = {
@@ -194,65 +197,6 @@ def contactOrg(pet_id):
     pet_info = response.json()
 
     return render_template("orgs.html", pet_info=pet_info)
-
-
-# @app.route('/favorite/<int:pet_id>', methods=['GET','POST'])
-# def add_favorite(pet_id):
-#     """add pet to favorites."""
-
-#     if not g.user:
-#         flash("Access unauthorized.", "danger")
-#         return redirect("/register")
-
-#     if request.method == 'GET':
-        
-#         headers = {
-#         'Authorization': f'Bearer {TOKEN}',
-#         }
-
-#         response = requests.get(f'{BASE_URL}/animals/{pet_id}', headers=headers)
-#         pet_info = response.json()
-
-#         users = User.query.all()
-#         # print('$$$$$$$$$$$$$$$$$$$', list(db.session.query(User.id).all()[0])[0])
-        
-#         pet = Pet(
-#             name=pet_info['animal']['name']
-#         )
-
-#         pets = Pet.query.all()
-        
-#         for p in pets:
-#             p_id = list(db.session.query(p.id).all()[0])[0]
-#         #     print('$$$$$$$$$$$$$$$$$$$$$', list(db.session.query(p.id).all()[0])[0])
-
-#         fav_pet = Favorite(
-#             user_id=list(db.session.query(User.id).all()[0])[0],
-#             pet_id=p_id
-#         )
-
-#         db.session.add(pet)
-#         db.session.add(fav_pet)
-
-#         db.session.commit()
-
-
-#         return redirect('/pets')
-        
-#     return render_template("favorites.html", pet=pet, fav_pet=fav_pet)
-
-
-# @app.route('/users/<int:user_id>/favorites', methods=['GET'])
-# def show_favorites(user_id):
-#         """show user favorites."""
-
-#         if not g.user:
-#             flash("Access unauthorized.", "danger")
-#             return redirect("/register")
-
-#         user = User.query.get_or_404(user_id)
-
-#         return render_template('favorites.html', user=user, fav_pets=user.pets)
 
 
 @app.route('/logout')

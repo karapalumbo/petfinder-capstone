@@ -5,10 +5,11 @@ content%}
 
 <form method="POST">
   {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
-  !='hidden' %}
-
-  <p>{{ field.label }} {{ field(class_="form-control") }}</p>
-  {% endfor %}
+  !='hidden' %} {% for error in field.errors %}
+<span class="text-danger">{{ error }}</span>
+{% endfor %}
+<p>{{ field.label }} {{ field(class_="form-control") }}</p>
+{% endfor %}
 
   <button class="btn btn-success" class="search-btn" id="toggle" type="submit">Search</button>
 </form>

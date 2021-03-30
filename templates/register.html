@@ -4,10 +4,10 @@ content%}
 <h1 class="display-5">Register to become a member!</h1>
 <form method="POST">
   {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
-  'hidden' %}
-
+  'hidden' %} {% for error in field.errors %}
+  <span class="text-danger">{{ error }}</span>
+  {% endfor %}
   <p>{{ field.label }} {{ field(class_="form-control") }}</p>
-
   {% endfor %}
 
   <button class="btn btn-success" type="submit">Submit</button>

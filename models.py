@@ -17,8 +17,6 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
-
-    pets = db.relationship("Pet", secondary="favorites", backref='users')
     
 
     @classmethod
@@ -46,17 +44,6 @@ class User(db.Model):
                 return user
   
         return False
-
-
-
-class Favorite(db.Model):
-    """Mapping user favorites to pets."""
-
-    __tablename__ = 'favorites' 
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
-    pet_id = db.Column(db.Integer, db.ForeignKey('pets.id', ondelete='cascade'))
 
 
 class Pet(db.Model):
