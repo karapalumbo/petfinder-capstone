@@ -128,7 +128,7 @@ def pets():
     return render_template("pets.html", user=user, pet_info=pet_info)
 
 
-@app.route('/types', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def pet_types():
     """Seach by type."""
 
