@@ -24,8 +24,8 @@ class UserAddForm(FlaskForm):
 class PetTypeForm(FlaskForm):
     """Form for searching by pet type."""
 
-    species = SelectField('Species', choices=[('cat'), ('dog'), ('rabbit')])
-    gender = SelectField('Gender', choices=[('male'), ('female')])
-    age = SelectField('Age', choices=[('baby'), ('young'), ('adult'), ('senior')])
-    size = SelectField("Size", choices=[('small'), ('medium'), ('large')])
-    color = SelectField("Color", choices=[('black'), ('white'), ('brown'), ('cream')])
+    species = SelectField(u'Species', choices=[('cat'), ('dog'), ('rabbit')])
+    gender = SelectField(u'Gender', choices=[('male'), ('female')])
+    age = SelectField(u'Age', choices=[('baby'), ('young'), ('adult'), ('senior')])
+    size = SelectField(u"Size", choices=[('small'), ('medium'), ('large')])
+    color = SelectField(u"Color", choices=[('black'), ('white'), ('brown')])

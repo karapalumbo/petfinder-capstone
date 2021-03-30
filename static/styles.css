@@ -4,7 +4,6 @@
 }
 
 .pet-card {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -14,7 +13,6 @@
 }
 
 .pet-name-container {
-  display: flex;
   justify-content: space-between;
   width: 100%;
 }
@@ -22,4 +20,13 @@
 #pets {
   display: inline-flex;
   margin: 5px;
+}
+
+.random-results {
+  text-align: center;
+}
+
+#random-pet {
+  display: flex;
+  justify-content: center;
 }

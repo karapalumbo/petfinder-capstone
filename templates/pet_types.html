@@ -1,7 +1,7 @@
 {% extends 'index.html' %} {% block title %}PetFinder{% endblock %} {% block
 content%}
 
-<h1 class="text-center">Search pets by type</h1>
+<h1 class="text-center">Your purrrfect friend is waiting!</h1>
 
 <form method="POST">
   {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
@@ -10,8 +10,9 @@ content%}
   <p>{{ field.label }} {{ field(class_="form-control") }}</p>
   {% endfor %}
 
-  <button class="btn btn-success" type="submit">Search</button>
+  <button class="btn btn-success" class="search-btn" id="toggle" type="submit">Search</button>
 </form>
+
 {% for p in animal['animals'] %}
 <div id="pets" class="row">
   <div class="card text-center m-1" style="width: 18rem">
@@ -31,15 +32,7 @@ content%}
     <div class="card-body pet-card">
       <div class="pet-name-container">
         <h5 class="card-title">{{ p.name }}</h5>
-        <a
-          href="${url}/favorite/${p[i].id}"
-          class="btn btn-outline-danger"
-          data-pet="${p[i].id}"
-          ><i class="fa fa-heart"></i
-        ></a>
       </div>
-      <span class="card-text">{{ p.gender }}</span>
-      <span class="card-text">{{ p.age }}</span>
       <p class="card-text">{{ p.type }}</p>
       <a
         href="/pet/{{p.id}}"
@@ -51,9 +44,44 @@ content%}
     </div>
   </div>
 </div>
-{% endfor %} {% if animal['animals']|length == 0 %}
-<p>
-  Oh no! We couldn't find any animals with your criteria. Be sure to search
-  again!
-</p>
-{% endif %} {% endblock %}
+{% endfor %}
+
+<div id="random-pet-container" >
+  {% if show_random_pet == True %}
+    {% for r in random_animal['animals'] %}
+    <p class="random-results">
+      Oh no! No results found. Consider adopting {{ r.name }} instead!
+    </p>
+    <div id="random-pet" class="row">
+      <div class="card text-center m-1" style="width: 18rem">
+        {% if r['photos']|length == 0 %}
+        <img
+          src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
+          class="card-img-top m-1 img"
+          alt="image of pets"
+        />
+        {% else %}
+        <img
+          src="{{ r['photos'][0]['small'] }}"
+          class="card-img-top m-1 img"
+          alt="image of pets"
+        />
+        {% endif %}
+        <div class="card-body pet-card">
+          <div class="pet-name-container">
+            <h5 class="card-title">{{ r.name }}</h5>
+          </div>
+          <p class="card-text">{{ r.type }}</p>
+          <a
+            href="/pet/{{r.id}}"
+            id="pet-info-button"
+            data-pet="{{ r.id }}"
+            class="btn btn-outline-dark"
+            >About me!</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %} {% endif %} {% endblock %}
+</div>

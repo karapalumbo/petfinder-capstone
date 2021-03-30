@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
 BASE_URL = "https://api.petfinder.com/v2"
-TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6IjI2ODJjMjcxNjdkMDI0MGI5YzlhOTAxYzdmZWRlNGZkOTE1YzE5NjBkZWYxMGU3YWM1NGNjMThhOGEyODEyNzVkZjlmYjA3OTkxZDQ3NTg4IiwiaWF0IjoxNjE3MDU0NDE3LCJuYmYiOjE2MTcwNTQ0MTcsImV4cCI6MTYxNzA1ODAxNywic3ViIjoiIiwic2NvcGVzIjpbXX0.Ly8UnIKq4YE5kZi2xF1BU0pxWnlbu3eKOD4UnHS2l0OYZ-DWQJb50eG5NzTlheQ8fd0esHwQqPbFe3Up27MPvjtHlMnv7jVcty7CR7kgpLlcFFNB5qwfs1FBj9QaHhJDU3lZEyVYChdchoLTz2REnMKFWwe8W2n7UO_NCWOV7GR7UXtutLePicwBIgPojnG_aXvUOSfemDoG5YSE4Eh0IsEZuQVsKDHp3lP49lxGVg5QrMihVTVelI-xKpPZnd1l154z7dDTwQzfWIhj_3nnH4OXRNjV74LAD1F0PcRMqx4mGsToNyu_lYIsVr3IcRUxXs6OplCqS6kM6-3WrkGT7g"
+TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI1NmVjaHhhU3RxcUVic2hXNXFNN1VpSURuY0xQRjk2b3h5N0JYblNHYUl1Ymx0OXdmNCIsImp0aSI6Ijg5MzE5MTY1Njk4NWU5OTVhMDc5OWViYTgzNGQ4ZWQ2ZDg1OTAyYWVmNzY0MWJiZTEwN2I0OTg3ZTIxNzYxZjAxNWFlMDhlODU0NmY2YWZkIiwiaWF0IjoxNjE3MTIzMDY4LCJuYmYiOjE2MTcxMjMwNjgsImV4cCI6MTYxNzEyNjY2OCwic3ViIjoiIiwic2NvcGVzIjpbXX0.F9ji5l2quU5_DP-IVGcmB7whQCC7h2402_0gZ1L4fBVbQYt6J-GaX4JWD2H7_6brHkDT8iVvKuVd8--FCfc0XF0q9CDGZxR-jsnGDxoiwkRUZ7GNqig2NaX-_YGbNmUAdER-OEDrovXhGSjQwikocx9HXmx2BXd5psGhCBlxVtFA55jhIRkg1POPSGiTlz0BHh_oon18E-Jk_EsvJeon-h60y-QVd03U6Bhg9_E8wHORHSnSaxe6WFkcqCp-PnWvU40xxjb7rZmvK0VoVn33Hplb29dNK7Z-rJuxDnKx3Bc10Q7nduvUYMLJtFH8kIsI8QFxZRMF28m-igR2PJoegA"
 CURR_USER_KEY = "current_user"
 
 pf = petpy.Petfinder(key=API_CLIENT_KEY, secret=API_SECRET_KEY)
@@ -135,6 +135,7 @@ def pet_types():
 
     form = PetTypeForm()
 
+    show_random_pet = False
     animals_data = []
 
     if form.validate_on_submit():
@@ -151,9 +152,12 @@ def pet_types():
 
         animals_data = pf.animals(animal_type=f'{pet.species}', gender=f'{pet.gender}', age=f'{pet.age}', size=f'{pet.size}', color=f'{pet.color}')
 
-        # print('$$$$$$$$$$$$$$$$$$$$$$', animals_data)
+        if len(animals_data['animals']) == 0:
+            show_random_pet = True
 
-    return render_template("pet_types.html", form=form, animal=animals_data)
+    random_animal = pf.animals(results_per_page=1)
+
+    return render_template("pet_types.html", form=form, animal=animals_data, random_animal=random_animal, show_random_pet=show_random_pet)
 
 
 @app.route("/pet/<int:pet_id>", methods=['GET'])

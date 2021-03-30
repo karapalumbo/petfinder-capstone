@@ -1,3 +1,13 @@
+// $searchBtn.click(function () {
+//   $($randomPetCard).show();
+// });
+
+// function showRandomPet() {
+//   if (animal['animals'].length === 0) {
+
+//   }
+// }
+
 // // const BASE_URL = "https://api.petfinder.com/v2";
 // const url = "http://127.0.0.1:5000";
 // const API_CLIENT_KEY = "56echxaStqqEbshW5qM7UiIDncLPF96oxy7BXnSGaIublt9wf4";
