@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from models import db, User, Favorite
+from models import db, User, Pet
 
 os.environ['DATABASE_URL'] = "postgresql:///petfinder-test"
 

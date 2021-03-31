@@ -21,6 +21,7 @@ class UserAddForm(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
 
+
 class PetTypeForm(FlaskForm):
     """Form for searching by pet type."""
 
