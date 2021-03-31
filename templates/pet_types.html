@@ -1,88 +1,67 @@
 {% extends 'index.html' %} {% block title %}PetFinder{% endblock %} {% block
 content%}
 
-<h1 class="text-center">Your purrrfect friend is waiting!</h1>
-
-<form method="POST">
-  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
-  !='hidden' %} {% for error in field.errors %}
-<span class="text-danger">{{ error }}</span>
-{% endfor %}
-<p>{{ field.label }} {{ field(class_="form-control") }}</p>
-{% endfor %}
-
-  <button class="btn btn-success" class="search-btn" id="toggle" type="submit">Search</button>
-</form>
-
-{% for p in animal['animals'] %}
-<div id="pets" class="row">
-  <div class="card text-center m-1" style="width: 18rem">
-    {% if p['photos']|length == 0 %}
-    <img
-      src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
-      class="card-img-top m-1 img"
-      alt="image of pets"
-    />
-    {% else %}
-    <img
-      src="{{ p['photos'][0]['small']}}"
-      class="card-img-top m-1 img"
-      alt="image of pets"
-    />
-    {% endif %}
-    <div class="card-body pet-card">
-      <div class="pet-name-container">
-        <h5 class="card-title">{{ p.name }}</h5>
-      </div>
-      <p class="card-text">{{ p.type }}</p>
-      <a
-        href="/pet/{{p.id}}"
-        id="pet-info-button"
-        data-pet="{{ p.id }}"
-        class="btn btn-outline-dark"
-        >About me!</a
-      >
-    </div>
-  </div>
-</div>
-{% endfor %}
-
-<div id="random-pet-container" >
-  {% if show_random_pet == True %}
-    {% for r in random_animal['animals'] %}
-    <p class="random-results">
-      Oh no! No results found. Consider adopting {{ r.name }} instead!
-    </p>
-    <div id="random-pet" class="row">
-      <div class="card text-center m-1" style="width: 18rem">
-        {% if r['photos']|length == 0 %}
-        <img
-          src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
-          class="card-img-top m-1 img"
-          alt="image of pets"
-        />
-        {% else %}
-        <img
-          src="{{ r['photos'][0]['small'] }}"
-          class="card-img-top m-1 img"
-          alt="image of pets"
-        />
-        {% endif %}
-        <div class="card-body pet-card">
-          <div class="pet-name-container">
-            <h5 class="card-title">{{ r.name }}</h5>
-          </div>
-          <p class="card-text">{{ r.type }}</p>
-          <a
-            href="/pet/{{r.id}}"
-            id="pet-info-button"
-            data-pet="{{ r.id }}"
-            class="btn btn-outline-dark"
-            >About me!</a
-          >
+<div class='container'>
+    <h1 class="text-center mb-4">Your purrrfect friend is waiting!</h1>
+    
+    <form class='search-form' method="POST">
+        {{ form.hidden_tag() }} {% for field in form if field.widget.input_type
+      !='hidden' %} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        <p>{{ field.label }} {{ field(class_="form-control") }}</p>
+        {% endfor %}
+    
+        <button class="btn btn-success" class="search-btn" id="toggle" type="submit">Search</button>
+    </form>
+    <div >
+        {% for p in animal['animals'] %}
+        <div id="pets" class="row">
+            <div class="card text-center m-1" style="width: 18rem">
+                {% if p['photos']|length == 0 %}
+                <img src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
+                    class="card-img-top m-1 img" alt="image of pets" />
+                {% else %}
+                <img src="{{ p['photos'][0]['small']}}" class="card-img-top m-1 img" alt="image of pets" />
+                {% endif %}
+                <div class="card-body pet-card">
+                    <div class="pet-name-container">
+                        <h5 class="card-title">{{ p.name }}</h5>
+                    </div>
+                    <p class="card-text">Species: {{ p.type }}</p>
+                    <a href="/pet/{{p.id}}" id="pet-info-button" data-pet="{{ p.id }}" class="btn btn-outline-dark">About
+                        me!</a>
+                </div>
+            </div>
         </div>
-      </div>
+        {% endfor %}
+        <div id="random-pet-container">
+            {% if show_random_pet == True %}
+            {% for r in random_animal['animals'] %}
+            <p class="random-results">
+                Oh no! No results found. Consider adopting {{ r.name }} instead!
+            </p>
+            <div id="random-pet" class="row">
+                <div class="card text-center m-1" style="width: 18rem">
+                    {% if r['photos']|length == 0 %}
+                    <img src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
+                        class="card-img-top m-1 img" alt="image of pets" />
+                    {% else %}
+                    <img src="{{ r['photos'][0]['small'] }}" class="card-img-top m-1 img" alt="image of pets" />
+                    {% endif %}
+                    <div class="card-body pet-card">
+                        <div class="pet-name-container">
+                            <h5 class="card-title">{{ r.name }}</h5>
+                        </div>
+                        <p class="card-text">Species: {{ r.type }}</p>
+                        <a href="/pet/{{r.id}}" id="pet-info-button" data-pet="{{ r.id }}" class="btn btn-outline-dark">About
+                            me!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %} {% endif %} {% endblock %}
+        </div>
     </div>
-  </div>
-  {% endfor %} {% endif %} {% endblock %}
 </div>
+

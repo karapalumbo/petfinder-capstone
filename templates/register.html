@@ -1,16 +1,17 @@
 {% extends 'index.html' %} {% block title %}Pets{% endblock %} {% block
 content%}
+<div class="container col-md-4 shadow p-3 mb-5 bg-body rounded">
+  <h1 class="fs-3 fw-bold">Register to find your pet</h1>
+  <form method="POST">
+    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+    'hidden' %} {% for error in field.errors %}
+    <span class="text-danger">{{ error }}</span>
+    {% endfor %}
+    <p>{{ field.label }} {{ field(class_="form-control") }}</p>
+    {% endfor %}
 
-<h1 class="display-5">Register to become a member!</h1>
-<form method="POST">
-  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
-  'hidden' %} {% for error in field.errors %}
-  <span class="text-danger">{{ error }}</span>
-  {% endfor %}
-  <p>{{ field.label }} {{ field(class_="form-control") }}</p>
-  {% endfor %}
-
-  <button class="btn btn-success" type="submit">Submit</button>
-</form>
+    <button class="btn btn-success" type="submit">Register</button>
+  </form>
+</div>
 
 {% endblock %}

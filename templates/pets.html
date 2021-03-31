@@ -1,41 +1,40 @@
 {% extends 'index.html' %} {% block title %}PetFinder{% endblock %} {% block
 content%}
+<div class="container">
+  <h1 class="text-center">Helping you find your forever friend</h1>
 
-<h1 class="text-center">Helping you find your forever friend</h1>
+  {% for p in pet_info['animals'] %}
 
-{% for p in pet_info['animals'] %}
-
-<div id="pets" class="row">
-  <div class="card text-center m-1" style="width: 18rem">
-    {% if p['photos']|length == 0 %}
-    <img
-      src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
-      class="card-img-top m-1 img"
-      alt="image of pets"
-    />
-    {% else %}
-    <img
-      src="{{ p['photos'][0]['small']}}"
-      class="card-img-top m-1 img"
-      alt="image of pets"
-    />
-    {% endif %}
-    <div class="card-body pet-card">
-      <div class="pet-name-container">
+  <div id="pets" class="row">
+    <div class="card text-center m-1" style="width: 18rem">
+      {% if p['photos']|length == 0 %}
+      <img
+        src="https://mylostpetalert.com/wp-content/themes/mlpa-child/images/nophoto.gif"
+        class="card-img-top m-1 img"
+        alt="image of pets"
+      />
+      {% else %}
+      <img
+        src="{{ p['photos'][0]['small']}}"
+        class="card-img-top m-1 img"
+        alt="image of pets"
+      />
+      {% endif %}
+      <div class="card-body pet-card">
         <h5 class="card-title">{{ p.name }}</h5>
+        <div class="card-text">Gender: {{ p.gender }}</div>
+        <div class="card-text">Age: {{ p.age }}</div>
+        <p class="card-text">Species: {{ p.type }}</p>
+        <a
+          href="/pet/{{p.id}}"
+          id="pet-info-button"
+          data-pet="{{ p.id }}"
+          class="btn btn-outline-dark"
+          >About me!</a
+        >
       </div>
-      <span class="card-text">{{ p.gender }}</span>
-      <span class="card-text">{{ p.age }}</span>
-      <p class="card-text">{{ p.type }}</p>
-      <a
-        href="/pet/{{p.id}}"
-        id="pet-info-button"
-        data-pet="{{ p.id }}"
-        class="btn btn-outline-dark"
-        >About me!</a
-      >
     </div>
   </div>
-</div>
 
-{% endfor %} {% endblock %}
+  {% endfor %} {% endblock %}
+</div>
